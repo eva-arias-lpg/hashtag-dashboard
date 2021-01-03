@@ -3,7 +3,7 @@
 </template>
 
 <script>
-export default {};
+export default { name: 'ofertas' };
 </script>
 
 <style></style>

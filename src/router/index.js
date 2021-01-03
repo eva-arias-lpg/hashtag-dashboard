@@ -1,40 +1,88 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import inicio from '../views/Inicio.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'inicio',
+    component: inicio
   },
   {
-    path: '/settings',
-    name: 'user-settings',
+    path: '/configuracion',
+    name: 'configUsuario',
     component: () =>
       import(
-        /* webpackChunkName: "user-settings" */ '../views/UserSettings.vue'
+        /* webpackChunkName: "configUsuario" */ '../views/ConfigUsuario.vue'
       )
   },
   {
-    path: '/requests',
-    name: 'requests',
+    path: '/pedidos',
+    name: 'pedidos',
     component: () =>
-      import(/* webpackChunkName: "requests" */ '../views/Requests.vue')
+      import(/* webpackChunkName: "pedidos" */ '../views/Pedidos.vue')
   },
   {
-    path: '/offers',
-    name: 'offers',
+    path: '/ofertas',
+    name: 'ofertas',
     component: () =>
-      import(/* webpackChunkName: "offers" */ '../views/Offers.vue')
+      import(/* webpackChunkName: "ofertas" */ '../views/Ofertas.vue')
   },
   {
-    path: '/contacts',
-    name: 'contacts',
+    path: '/contactos',
+    name: 'contactos',
     component: () =>
-      import(/* webpackChunkName: "offers" */ '../views/Contacts.vue')
+      import(/* webpackChunkName: "contactos" */ '../views/Contactos.vue')
+  },
+  {
+    path: '/nuevo-pedido',
+    name: 'nuevoPedido',
+    component: () =>
+      import(/* webpackChunkName: "nuevoPedido" */ '../views/NuevoPedido.vue'),
+    children: [
+      {
+        path: '',
+        name: 'nuevoPedidoTipoSeleccion',
+        component: () =>
+          import(
+            /* webpackChunkName: "nuevoPedidoTipoSeleccion" */ '../views/NuevoPedidoTipoSeleccion.vue'
+          )
+      },
+      {
+        path: 'banner',
+        name: 'nuevoBanner',
+        component: () =>
+          import(
+            /* webpackChunkName: "nuevo-banner" */ '../views/NuevoPedidoBanner.vue'
+          )
+      },
+      {
+        path: 'emailing',
+        name: 'nuevoEmailing',
+        component: () =>
+          import(
+            /* webpackChunkName: "nuevo-emailing" */ '../views/NuevoPedidoEmailing.vue'
+          )
+      },
+      {
+        path: 'bolsa-de-trabajo',
+        name: 'nuevoBolsaDeTrabajo',
+        component: () =>
+          import(
+            /* webpackChunkName: "nuevo-bolsa-de-trabajo" */ '../views/NuevoPedidoBolsaDeTrabajo.vue'
+          )
+      },
+      {
+        path: 'smartcontent',
+        name: 'nuevoSmartContent',
+        component: () =>
+          import(
+            /* webpackChunkName: "nuevoBanner" */ '../views/NuevoPedidoSmartContent.vue'
+          )
+      }
+    ]
   }
   // {
   //   path: "/"

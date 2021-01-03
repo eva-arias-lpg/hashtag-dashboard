@@ -3,7 +3,7 @@
 </template>
 
 <script>
-export default { name: 'user-settings' };
+export default { name: 'configUsuario' };
 </script>
 
 <style></style>

@@ -3,7 +3,7 @@
     <NavigationDrawer />
 
     <v-main>
-      <v-container>
+      <v-container fluid>
         <router-view></router-view>
       </v-container>
     </v-main>
@@ -17,17 +17,16 @@
 </template>
 
 <script>
-import NavigationDrawer from "./components/TheNavDrawer";
+import NavigationDrawer from './components/TheNavDrawer';
 
 export default {
-  name: "App",
-
+  name: 'App',
   components: {
-    NavigationDrawer,
+    NavigationDrawer
   },
 
   data: () => ({
     //
-  }),
+  })
 };
 </script>

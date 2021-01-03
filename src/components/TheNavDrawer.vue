@@ -12,9 +12,9 @@
         <v-img src="@/assets/hashtag.svg"></v-img>
       </v-list-item-avatar>
 
-      <v-list-item-title class="text-display font-weight-black"
-        ># Hashtag #</v-list-item-title
-      >
+      <v-list-item-title class="text-display font-weight-black">
+        #Hashtag#
+      </v-list-item-title>
 
       <v-btn icon @click.stop="mini = !mini">
         <v-icon>mdi-chevron-left</v-icon>
@@ -27,7 +27,13 @@
     <!-- / User profile settings + logout btn -->
     <v-divider></v-divider>
 
-    <v-list-item class="px-2 pt-4">
+    <v-list-item
+      class="px-2 pt-4"
+      :to="{ name: 'newRequest' }"
+      exact
+      active-class="navbar__active-actionBtn"
+      exact-active-class="navbar__active-actionBtn"
+    >
       <v-btn
         small
         rounded
@@ -94,10 +100,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .text-display {
   text-transform: uppercase;
   letter-spacing: 0.0892857143em;
   font-size: 1.25rem;
+}
+
+.navbar__active-actionBtn {
+  background-color: transparent !important;
+  color: transparent !important;
 }
 </style>

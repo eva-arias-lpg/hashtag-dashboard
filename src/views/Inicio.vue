@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'Home',
+  name: 'inicio',
   data() {
     return {
       user: {
