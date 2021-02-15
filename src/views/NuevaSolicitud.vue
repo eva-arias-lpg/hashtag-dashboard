@@ -6,7 +6,7 @@
 </template>
 <script>
 export default {
-  name: 'nuevoPedido',
+  name: 'nuevaSolicitud',
   data() {
     return {
       // Opciones de pedidos

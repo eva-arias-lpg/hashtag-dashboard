@@ -15,7 +15,7 @@
         <v-card-title class="font-weight-bold">{{ type.title }}</v-card-title>
 
         <v-card-text
-          style="height: 200px; max-height: 200px"
+          style="height: 150px; max-height: 200px"
           class="overflow-y-auto"
         >
           {{ type.desc }}
@@ -28,7 +28,14 @@
             block
             color="#00e676"
             class="font-weight-bold"
-            :to="{ name: `nuevo${normalizeTitle(type.title)}` }"
+            :to="{
+              name: 'nuevaSolicitudFormulario',
+              params: {
+                tipo: `${transformTitle(
+                  type.hasOwnProperty('name') ? type.name : type.title
+                )}`
+              }
+            }"
           >
             Solicitar
           </v-btn>
@@ -40,11 +47,18 @@
 
 <script>
 export default {
-  name: 'nuevoPedidoTipoSeleccion',
+  name: 'nuevaSolicitudTipoSeleccion',
   data() {
     return {
       // Opciones de pedidos
       requestTypes: [
+        {
+          title: 'Paquete de Productos',
+          name: 'Paquete',
+          desc:
+            'Seleccionando esta opción puedes agrupar en una sola solicitud más de un producto.',
+          img: 'card_package.svg'
+        },
         {
           title: 'Banner',
           desc:
@@ -73,8 +87,8 @@ export default {
     };
   },
   methods: {
-    normalizeTitle(title) {
-      return title.replace(/ /g, '');
+    transformTitle(title) {
+      return title.replace(/ /g, '').toLowerCase();
     }
   }
 };

@@ -1,0 +1,254 @@
+// Todas las fechas en UTC, a no ser que el campo tenga el sufijo _SV (que entonces seria UCT-6)
+
+// Table authorization_roles {
+//   id int [pk]
+//   title varchar(50) // Titulo del permiso: Administrador, admin light, etc
+//   description varchar(100) // Para quien es el permiso o cual es el objetivo?
+//   resource_location varchar
+//   allows_add boolean
+//   allows_read boolean
+//   allows_update boolean
+//   allows_delete boolean
+//   created_at datetime [not null, default: `now()`]
+//   deactivated_at datetime [not null, default: `now()`]
+// }
+
+Project hastag_tickets {
+  database_type: 'MySQL'
+  Note: 'DB pa los servicios web de Hashtag'
+}
+
+Table hashtag_tickets_users {
+  id int [pk, not null, increment]
+  codigo_vendedor varchar [not null, unique]
+  nombres varchar(50) [not null]
+  apellidos varchar(50) [not null]
+  correo_electronico varchar(50) [not null]
+  telefono_numero varchar [default: null]
+  telefono_extension varchar [default: null]
+  titulo_profesional varchar [default: '-']
+  
+  password_hash varchar [not null]
+  
+  fecha_creado datetime [not null, default: `now()`]
+  fecha_desactivado datetime [default:null]
+  fecha_eliminado datetime [default:null]
+  fecha_ultimo_login datetime [default:null]
+  
+  Note: 'Almacena usuarios del servicio web de Tickets de Hashtag'
+}
+
+Table tickets_roles {
+  id int [pk, increment]
+  title varchar(50) [not null]
+  description varchar(100) [default: null]
+  created_at datetime
+  Note: 'Describe los roles de acceso que pueden tener los usuarios'
+}
+
+Table hashtag_tickets_users_roles {
+  id int [pk, increment]
+  user_id int [ref: - hashtag_tickets_users.id]
+  role_id int [ref: > tickets_roles.id]
+  Note: 'Relaciona'
+}
+
+Table hashtag_categorias_productos {
+  id int [pk, increment]
+  titulo varchar(100) // banner|bolsa de trabajo|smartcontent|emailing
+  Note: 'Define las categorias de productos que puede solicitar el usuario.'
+}
+
+Table hashtag_productos {
+  // Eg: "BANNER - TRADICIONAL" Este producto pertenece a la categoria BANNER.
+  // Banner: tradicional|rich media|rich media video|banner prueba
+  // Emailing: HTML | Tradicional
+  // Bolsa de Trabajo: Standard 12.50 | Premium 25 | Plus 50 | Full 100
+  id int [pk, increment]
+  hashtag_categorias_productos int [ref: > hashtag_categorias_productos.id]
+  titulo varchar(100) [not null, unique]
+  
+  fecha_creacion datetime [default: `now()`]
+  
+  Note: 'Almacena productos a ofertar.'
+}
+
+Table hashtag_tickets_solicitudes {
+  id int [pk, increment]
+  id_usuario int [ref: > hashtag_tickets_users.id, not null]
+  odi_numero int [note: '6 o 9 digitos', default: null]
+  
+  inversion_sin_iva double
+  inversion_iva double
+  
+  // Resolucion -> respuesta que le das a la solicitud.
+  resolucion_fecha datetime [default: null]
+  resolucion_estado int [default: 1, ref: > hashtag_tickets_solicitudes_estados.id] // 1 = pendiente, 2 = aprobado, 3 = no aprobado
+  
+  fecha_creacion datetime [default: `now()`]
+  fecha_eliminado datetime [default: null]
+  fecha_ultima_modificacion datetime [default: null]
+  
+  empresa_nombre varchar(200)
+  indicaciones varchar(250) [default: null]
+  archivos_adjuntos varchar // Ubicacion de los recursos, separados por punto y coma.
+  Note: 'Almacena las solicitudes realizadas por los usuarios.'
+}
+
+Table hashtag_tickets_solicitudes_estados {
+  id int [pk, increment]
+  titulo varchar(50) [Note: 'aprobado|rechazado|pendiente']
+  Note: 'Tipos de estados de resolucion que puede tener un ticket.'
+}
+
+Table hashtag_tickets_solicitudes_log {
+  id int [pk, increment]
+  id_usuario int [ref: > hashtag_tickets_users.id, not null]
+  id_solicitud int [ref: > hashtag_tickets_solicitudes.id, not null]
+  tipo_operacion varchar [note: 'ADD|DEL|UPD']
+  cambios JSON [note: 'JSON de cambios generados en opr DEL y UPD']
+  
+  Note: 'Almacena los cambios realizados a las solicitudes'
+}
+
+Table hashtag_tickets_detalle_solicitudes {
+  id int [pk, increment]
+  id_hashtag_producto int [ref: > hashtag_productos.id]
+  id_hashtag_tickets_solicitud int [ref: > hashtag_tickets_solicitudes.id]
+  campos JSON
+  Note: 'Tabla que describe los productos contenidos en la solicitud.'
+}
+
+// Table hashtag_productos_subtipos_log {
+  //   // Mas que todo servira para llevar tracking de los precios de los subtipos 
+  //   // de productos, los cuales se podran modificar en el sitio con sesion ADMIN
+  //   id int [pk, increment]
+  //   id_usuario int [ref: > hashtag_tickets_users.id, not null]
+  //   id_hashtag_productos_tipo int [ref: > hashtag_productos.id]
+  //   tipo_operacion varchar [note: 'ADD|DEL|UPD']
+  //   cambios JSON [note: 'JSON con los cambios aplicados al item.']
+  //   fecha datetime [default: `now()`]
+    
+  //   Note: 'Almacena los cambios realizados a las propiedades de las tablas de subtipos, para los productos Hashtag'
+// }
+
+//*** TABLAS DE REGISTRO ***//
+Table hashtag_registro_banners {
+  id int [pk, increment]
+  id_banner_tipo int [ref: > hashtag_productos_subtipos.id]
+  url_destino varchar
+  archivos varchar // Ubicacion de los recursos, separados por punto y coma.
+  
+  publicar_LPG boolean
+  publicar_EE boolean
+  publicar_EG boolean
+  
+  impresiones_cantidad int
+  publicar_desde datetime
+  publicar_hasta datetime
+  
+  fecha_creado datetime [default: `now()`]
+  fecha_borrado datetime [default: null]
+
+  Note: 'Almacena info del banner solicitado para publicacion'
+}
+
+Table hashtag_registro_emailings {
+  id int [pk, increment]
+  id_hashtag_productos_subtipo int [ref: > hashtag_productos_subtipos.id]
+  
+  remitente varchar [not null, note: 'Correo electronico de quien lo envia']
+  asunto varchar [not null]
+  // contenido varchar [not null, note: 'Aloja HTML o texto plano']
+  url_destino varchar // URL de redireccion
+  
+  archivos varchar // Ubicacion de los recursos, separados por punto y coma.
+
+  fecha_creado datetime [default: `now()`]
+  fecha_borrado datetime [default: null]
+
+  Note: 'Almacena info del emailing solicitado para envio. Los envios se registran en la tabla `hashtag_productos_emailings_envios`'
+}
+
+Table hashtag_registro_emailings_envios {
+  id int [pk, increment]
+  id_hashtag_producto_emailing int [ref: > hashtag_registro_emailings.id]
+  fecha_inicio_envios datetime
+  fecha_creado datetime [default: `now()`]
+  fecha_borrado datetime [default: null]
+  Note: 'Registra los envios para un emailing.'
+}
+
+Table hashtag_registro_smartcontents {
+  id int [pk, increment]
+  id_hashtag_productos_subtipo int [ref: > hashtag_productos_subtipos.id]
+  cobertura_fecha_hora datetime [not null]
+  cobertura_direccion varchar(250) [not null]
+  cobertura_direccion_punto_referencia varchar(250) [default: null]
+  cobertura_briefing varchar(500) [not null] // Descripcion breve del evento que iran a cubrir
+
+  impresiones_cantidad int [not null] // Cuantos posts se van a guardar
+  publicacion_fecha datetime [not null]
+
+  publicar_FB boolean [not null]
+  publicar_TW boolean [not null]
+  publicar_IG boolean [not null]
+  
+  archivos varchar [default: null]
+  
+  fecha_creado datetime [default: `now()`]
+  fecha_borrado datetime [default: null]
+  Note: 'Almacena info adicional del SmartContent solicitado para su difusion'
+}
+
+Table hashtag_registro_socialcontents {
+  id int [pk, increment]
+  id_hashtag_productos_subtipo int [ref: > hashtag_productos_subtipos.id]
+  
+  publicacion_texto varchar(500)
+  publicacion_referencias varchar(250)
+
+  referencias_publicaciones varchar [default: null]// URL de los posts publicados separados por punto y coma.
+
+  archivos varchar
+  fecha_creado datetime [default: `now()`]
+  fecha_borrado datetime  [default: null]
+}
+
+Table hashtag_bdt_respuestas_destino_tipos {
+  // Destinos es hacia donde se enviaran las respuestas a la oferta de trabajo
+  // Tipos de destino: EMAIL, WHATSAPP, URL
+  id int [pk, increment]
+  titulo varchar(100) [not null]
+  mascara double [default: null] // Seria un REGEX para los tipos EMAIL, WHATSAPP, URL
+  
+  Note: 'Almacena los tipos de destinos de las respuestas a ofertas de Bolsa de Trabajo admitidos.'
+}
+
+// TODO: Hay que reestructurar la vision de bolsa de trabajo.
+Table hashtag_bolsa_de_trabajo {
+  id int [pk, increment]
+  id_hashtag_productos_subtipo int [ref: > hashtag_productos_subtipos.id] 
+  
+  oferta_descripcion varchar(250) [not null]
+  oferta_titulo varchar(88)
+  oferta_nombre_empresa varchar(100) // Nombre a mostrar de la empresa que ofrece la plaza
+
+  esta_activo boolean // Representa si debe mostrarse o no
+  publicar_desde datetime
+  publicar_hasta datetime
+
+  respuestas_destino varchar(250) [not null, note: 'Hacia donde se enviaran las respuestas a la oferta.']
+  id_respuestas_destino_tipo int [ref: > hashtag_registro_bdt_respuestas_destino_tipos.id, not null]
+  
+  oferta_premium_landing_contenido_ubicacion varchar(250) [default: null, note: 'Contenido que se mostrara en el detalle de la oferta, para los BDT anuncios en el carrousel premium. Esta columna hace referencia a un archivo que contiene el contenido a mostrar.']
+  oferta_premium_boletin_ubicacion varchar(250) [default: null] // Ubicacion del boletin electronico donde sera impreso el anuncio
+  oferta_premium_boletin_fecha_publicacion varchar(250)
+  oferta_premium_imagen_ubicacion varchar(250)
+  oferta_general_imagen_ubicacion varchar(250)
+
+  fecha_creado datetime [default: `now()`]
+  fecha_borrado datetime [default: null]
+  Note: 'Esta tabla describe los registros que se publicaran en el portal de Bolsa de Trabajo.'
+}
+

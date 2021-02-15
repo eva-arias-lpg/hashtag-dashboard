@@ -37,49 +37,26 @@ const routes = [
       import(/* webpackChunkName: "contactos" */ '../views/Contactos.vue')
   },
   {
-    path: '/nuevo-pedido',
-    name: 'nuevoPedido',
+    path: '/nueva-solicitud',
     component: () =>
-      import(/* webpackChunkName: "nuevoPedido" */ '../views/NuevoPedido.vue'),
+      import(
+        /* webpackChunkName: "nuevaSolicitud" */ '../views/NuevaSolicitud.vue'
+      ),
     children: [
       {
         path: '',
-        name: 'nuevoPedidoTipoSeleccion',
+        name: 'nuevaSolicitudTipoSeleccion',
         component: () =>
           import(
-            /* webpackChunkName: "nuevoPedidoTipoSeleccion" */ '../views/NuevoPedidoTipoSeleccion.vue'
+            /* webpackChunkName: "nuevaSolicitudTipoSeleccion" */ '../views/NuevaSolicitudTipoSeleccion.vue'
           )
       },
       {
-        path: 'banner',
-        name: 'nuevoBanner',
+        path: ':tipo',
+        name: 'nuevaSolicitudFormulario',
         component: () =>
           import(
-            /* webpackChunkName: "nuevo-banner" */ '../views/NuevoPedidoBanner.vue'
-          )
-      },
-      {
-        path: 'emailing',
-        name: 'nuevoEmailing',
-        component: () =>
-          import(
-            /* webpackChunkName: "nuevo-emailing" */ '../views/NuevoPedidoEmailing.vue'
-          )
-      },
-      {
-        path: 'bolsa-de-trabajo',
-        name: 'nuevoBolsaDeTrabajo',
-        component: () =>
-          import(
-            /* webpackChunkName: "nuevo-bolsa-de-trabajo" */ '../views/NuevoPedidoBolsaDeTrabajo.vue'
-          )
-      },
-      {
-        path: 'smartcontent',
-        name: 'nuevoSmartContent',
-        component: () =>
-          import(
-            /* webpackChunkName: "nuevoBanner" */ '../views/NuevoPedidoSmartContent.vue'
+            /* webpackChunkName: "nuevaSolicitudFormulario" */ '../views/NuevaSolicitudFormulario.vue'
           )
       }
     ]

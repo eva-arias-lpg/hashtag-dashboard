@@ -29,7 +29,7 @@
 
     <v-list-item
       class="px-2 pt-4"
-      :to="{ name: 'newRequest' }"
+      :to="{ name: 'nuevaSolicitudTipoSeleccion' }"
       exact
       active-class="navbar__active-actionBtn"
       exact-active-class="navbar__active-actionBtn"
@@ -44,7 +44,7 @@
         class="transition-swing text-left"
       >
         <v-icon :left="!mini">mdi-plus-circle-outline</v-icon>
-        <div v-show="!mini">Nuevo pedido</div>
+        <div v-show="!mini">Nueva solicitud</div>
       </v-btn>
     </v-list-item>
 
@@ -77,21 +77,21 @@ export default {
     return {
       drawer: true,
       items: [
-        { title: 'Inicio', icon: 'mdi-home-outline', location: 'home' },
+        { title: 'Inicio', icon: 'mdi-home-outline', location: 'inicio' },
         {
-          title: 'Pedidos',
+          title: 'Solicitudes',
           icon: 'mdi-inbox-full-outline',
-          location: 'requests'
+          location: 'pedidos'
         },
         {
           title: 'Ofertas',
           icon: 'mdi-folder-pound-outline',
-          location: 'offers'
+          location: 'ofertas'
         },
         {
           title: 'Contactos',
           icon: 'mdi-contacts-outline',
-          location: 'contacts'
+          location: 'contactos'
         }
       ],
       mini: true

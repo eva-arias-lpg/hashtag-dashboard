@@ -1,5 +1,8 @@
 <template>
-  <v-app>
+  <v-app
+    id="app"
+    :style="{ background: $vuetify.theme.themes.light.background }"
+  >
     <NavigationDrawer />
 
     <v-main>
@@ -24,7 +27,6 @@ export default {
   components: {
     NavigationDrawer
   },
-
   data: () => ({
     //
   })
